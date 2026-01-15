@@ -51,6 +51,8 @@ function App() {
   const [formData, setFormData] = useState<IFormData>(initialFormData)
   const [errors, setErrors] = useState<IFormErrors>(initialErrors)
   const [touched, setTouched] = useState<Record<string, boolean>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
 
   // Validate a single field
   const validateField = (name: string, value: string): string => {
@@ -72,6 +74,9 @@ function App() {
   ) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+
+    // Clear success message when user starts typing again
+    if (successMessage) setSuccessMessage('')
 
     // Validate on change if field was touched
     if (touched[name]) {
@@ -111,14 +116,29 @@ function App() {
     setTouched({ name: true, email: true, message: true })
 
     // Only submit if no errors
-    if (isFormValid()) {
+    if (!isFormValid()) return
+
+    // Simulate API call
+    setIsSubmitting(true)
+    setTimeout(() => {
       console.log('Form submitted:', formData)
-    }
+
+      // Reset form
+      setFormData(initialFormData)
+      setErrors(initialErrors)
+      setTouched({})
+      setIsSubmitting(false)
+      setSuccessMessage('Thank you! Your message has been sent.')
+    }, 1000)
   }
 
   return (
     <main>
       <h1>Vibe Form</h1>
+
+      {successMessage && (
+        <div className="success-message">{successMessage}</div>
+      )}
 
       <form onSubmit={handleSubmit}>
         <div>
@@ -131,6 +151,7 @@ function App() {
             onChange={handleChange}
             onBlur={handleBlur}
             className={errors.name && touched.name ? 'error' : ''}
+            disabled={isSubmitting}
           />
           {errors.name && touched.name && (
             <span className="error-message">{errors.name}</span>
@@ -147,6 +168,7 @@ function App() {
             onChange={handleChange}
             onBlur={handleBlur}
             className={errors.email && touched.email ? 'error' : ''}
+            disabled={isSubmitting}
           />
           {errors.email && touched.email && (
             <span className="error-message">{errors.email}</span>
@@ -162,14 +184,15 @@ function App() {
             onChange={handleChange}
             onBlur={handleBlur}
             className={errors.message && touched.message ? 'error' : ''}
+            disabled={isSubmitting}
           />
           {errors.message && touched.message && (
             <span className="error-message">{errors.message}</span>
           )}
         </div>
 
-        <button type="submit" disabled={!isFormValid()}>
-          Submit
+        <button type="submit" disabled={!isFormValid() || isSubmitting}>
+          {isSubmitting ? 'Sending...' : 'Submit'}
         </button>
       </form>
     </main>
