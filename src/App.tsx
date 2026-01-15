@@ -1,23 +1,25 @@
-import { useState } from 'react'
+import { useState, ChangeEvent, FormEvent } from 'react'
 
-// Type for our form data
-type FormData = {
+// Interface for form data structure
+interface IFormData {
   name: string
   email: string
   message: string
 }
 
-function App() {
-  // Initialize form state with empty values
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    message: ''
-  })
+// Initial empty form state
+const initialFormData: IFormData = {
+  name: '',
+  email: '',
+  message: ''
+}
 
-  // Handle input changes for all fields
+function App() {
+  const [formData, setFormData] = useState<IFormData>(initialFormData)
+
+  // Handle input changes - works for both input and textarea
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target
     setFormData(prev => ({
@@ -27,7 +29,7 @@ function App() {
   }
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log('Form submitted:', formData)
   }
