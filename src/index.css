@@ -76,6 +76,29 @@ button {
   transition: background-color 0.2s;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   background-color: #535bf2;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Error styles */
+input.error,
+textarea.error {
+  border-color: #e53935;
+}
+
+input.error:focus,
+textarea.error:focus {
+  border-color: #e53935;
+}
+
+.error-message {
+  display: block;
+  color: #e53935;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }
